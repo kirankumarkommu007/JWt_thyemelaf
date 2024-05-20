@@ -60,11 +60,12 @@ public class PageController {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             String username = jwtTokenProvider.extractUsername(token);
+            String role =jwtTokenProvider.extractRole(token);
             UserDetails userDetails = employeeDetailsService.loadUserByUsername(username);
             if (jwtTokenProvider.validateToken(token, userDetails)) {
                 model.addAttribute("token", "Bearer " + token);
                 model.addAttribute("username", userDetails.getUsername());
-                model.addAttribute("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+                model.addAttribute("roles", role);
                 return "home";
             }
         }
