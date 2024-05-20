@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h2>Home</h2>
+    <p>Welcome, <span th:text="${username}"></span>!</p>
+    <p>Your roles: <span th:each="role : ${roles}" th:text="${role} + ' '"></span></p>
+    <p>Your JWT Token: <span th:text="${token}"></span></p>
+    <div>
+        <a th:href="@{/admin/dashboard(token=${token})}" th:if="${roles.contains('ROLE_ADMIN')}">Go to Admin Dashboard</a>
+        <a th:href="@{/user/dashboard(token=${token})}" th:if="${roles.contains('ROLE_USER')}">Go to User Dashboard</a>
+    </div>
+</body>
+</html>
