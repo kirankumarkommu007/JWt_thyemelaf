@@ -66,10 +66,17 @@ body {
 		<ul class="nav-links">
 			<li><a th:href="@{admin/home}"
 				th:if="${roles.contains('ROLE_ADMIN')}">Admin Dashboard</a></li>
-			<li><a th:href="@{/user/home}"
+				
+				
+				
+			<li><a th:href="@{/user/profile}"
 				th:if="${roles.contains('ROLE_USER')}">User Dashboard</a></li>
+				
+				
+				
 			<li><a th:href="@{/hr/home}"
 				th:if="${roles.contains('ROLE_HR')}">HR Dashboard</a></li>
+				
 
 			<li><a th:href="@{/logout}">Logout</a></li>
 		</ul>

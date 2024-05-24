@@ -33,15 +33,18 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
-				.authorizeHttpRequests((auth) -> auth.requestMatchers("/login").permitAll().requestMatchers("/admin/**")
-						.hasRole("ADMIN").requestMatchers("/user/**").hasRole("USER").requestMatchers("/hr/**")
-						.hasRole("HR").anyRequest().authenticated());
+				.authorizeHttpRequests((auth) -> auth.requestMatchers("/login").permitAll()
+						.requestMatchers("/admin/**").hasRole("ADMIN")
+						.requestMatchers("/user/**").hasRole("USER")
+						.requestMatchers("/hr/**").hasRole("HR")
+						.anyRequest().authenticated());
 
-		http.formLogin((form) -> form.loginPage("/welcome").defaultSuccessUrl("/home", true)
-				.failureUrl("/login?error=true").permitAll());
-		http.logout((logout) -> logout
-		        .logoutUrl("/logout")
-		        .deleteCookies("token"));
+		http.formLogin((form) -> 
+		form.loginPage("/welcome")
+		.defaultSuccessUrl("/home", true)
+	    .failureUrl("/login?error=true").permitAll());
+		
+		http.logout((logout) -> logout.logoutUrl("/logout").deleteCookies("token"));//token delete after succesfull logout if not logged out token will stay until expiratation
 
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -49,7 +52,6 @@ public class SecurityConfig {
 
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
-//		http.httpBasic(Customizer.withDefaults());
 
 		return http.build();
 	}

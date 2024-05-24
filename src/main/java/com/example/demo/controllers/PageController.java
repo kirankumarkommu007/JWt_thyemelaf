@@ -40,10 +40,10 @@ public class PageController {
 
 	@GetMapping("/welcome")
 	public String getWelcome() {
-		return "welcome";}
-	
+		return "welcome";
+	}
 
-	@PostMapping("/login")
+	@PostMapping("/login")//successfull login generates token and save in cookie
 	public String login(@RequestParam String username, @RequestParam String password, Model model,
 			HttpServletResponse response) {
 		try {
@@ -68,28 +68,28 @@ public class PageController {
 		}
 	}
 
-	@GetMapping("/home")
+	@GetMapping("/home")//main page
 	public String home(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			String token = jwtTokenProvider.generateToken(userDetails);
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String token = jwtTokenProvider.generateToken(userDetails);
 
-			String role = jwtTokenProvider.extractRoleAsString(token); // Assuming you have access to the token
-			model.addAttribute("username", userDetails.getUsername());
-			model.addAttribute("roles", role);
-			return "home";
-		
+		String role = jwtTokenProvider.extractRoleAsString(token); // Assuming you have access to the token
+		model.addAttribute("username", userDetails.getUsername());
+		model.addAttribute("roles", role);
+		return "home";
+
 	}
 
 	@GetMapping("/admin/dashboard")
 	public String adminDashboard() {
-			return "admin_dashboard";
-		
+		return "admin_dashboard";
+
 	}
 
 	@GetMapping("/user/dashboard")
 	public String userDashboard() {
-			return "user_dashboard";
-		}
+		return "user_dashboard";
+	}
 
 }
