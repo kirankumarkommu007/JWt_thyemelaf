@@ -1,16 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+<title>Home</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+.navbar {
+	background-color: #333;
+	color: #fff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+}
+
+.nav-title {
+	font-size: 1.5rem;
+}
+
+.nav-links {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.nav-links li {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.nav-links li a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.container {
+	margin: 20px;
+}
+
+.container h2 {
+	color: #333;
+}
+
+.container p {
+	margin-bottom: 10px;
+}
+
+.container ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.container ul li {
+	margin-bottom: 5px;
+}
+</style>
 </head>
 <body>
-    <h2>Home</h2>
-    <p>Welcome, <span th:text="${username}"></span>!</p>
-    <p>Your roles: <span th:each="role : ${roles}" th:text="${role} + ' '"></span></p>
-    <p>Your JWT Token: <span th:text="${token}"></span></p>
-    <div>
-        <a th:href="@{/admin/dashboard(token=${token})}" th:if="${roles.contains('ROLE_ADMIN')}">Go to Admin Dashboard</a>
-        <a th:href="@{/user/dashboard(token=${token})}" th:if="${roles.contains('ROLE_USER')}">Go to User Dashboard</a>
-    </div>
+	<nav class="navbar">
+		<div class="nav-title">ITyNerds</div>
+		<ul class="nav-links">
+			<li><a th:href="@{admin/dashboard}"
+				th:if="${roles.contains('ROLE_ADMIN')}">Admin Dashboard</a></li>
+			<li><a th:href="@{/user/dashboard}"
+				th:if="${roles.contains('ROLE_USER')}">User Dashboard</a></li>
+			<li><a th:href="@{/hr/dashboard}"
+				th:if="${roles.contains('ROLE_HR')}">HR Dashboard</a></li>
+
+			<li><a th:href="@{/logout}">Logout</a></li>
+		</ul>
+	</nav>
+	<div class="container">
+		<h2>Welcome to ITyNerds</h2>
+		<p>
+			Hello, <span th:text="${username}"></span>!
+		</p>
+		<p>Your roles:</p>
+		<ul>
+			<li th:each="role : ${roles}" th:text="${role}"></li>
+		</ul>
+	</div>
 </body>
 </html>

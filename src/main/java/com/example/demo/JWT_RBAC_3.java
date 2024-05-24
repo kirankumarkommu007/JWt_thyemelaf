@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringSecurityBasicsApplication {
+public class JWT_RBAC_3 {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringSecurityBasicsApplication.class, args);
+		SpringApplication.run(JWT_RBAC_3.class, args);
 	}
 
 }

@@ -1,6 +1,8 @@
-package com.example.demo;
+package com.example.demo.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.Customizer;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,12 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.jwt.JwtRequestFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	@Autowired
-	private EmployeeDetailsServiceImpl employeeDetailsServiceImpl;
+	private MyUserDetailsService employeeDetailsServiceImpl;
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
@@ -34,9 +38,20 @@ public class SecurityConfig {
 						.requestMatchers("/user/**").hasRole("USER")
 						.requestMatchers("/hr/**").hasRole("HR")
 						.anyRequest().authenticated());
+		
+				http.logout((logout) -> logout
+				        .logoutUrl("/logout")
+				        .deleteCookies("token")
+				        .logoutSuccessUrl("/welcome").permitAll());
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		
+
+		http.csrf().disable();
+		http.headers().frameOptions().disable();
+//		http.httpBasic(Customizer.withDefaults());
 
 		return http.build();
 	}
