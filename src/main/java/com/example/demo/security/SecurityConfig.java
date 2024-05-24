@@ -33,21 +33,19 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
-				.authorizeHttpRequests((auth) -> auth.requestMatchers("/login", "/welcome","/home").permitAll()
-						.requestMatchers("/admin/**").hasRole("ADMIN")
-						.requestMatchers("/user/**").hasRole("USER")
-						.requestMatchers("/hr/**").hasRole("HR")
-						.anyRequest().authenticated());
-		
-				http.logout((logout) -> logout
-				        .logoutUrl("/logout")
-				        .deleteCookies("token")
-				        .logoutSuccessUrl("/welcome").permitAll());
+				.authorizeHttpRequests((auth) -> auth.requestMatchers("/login").permitAll().requestMatchers("/admin/**")
+						.hasRole("ADMIN").requestMatchers("/user/**").hasRole("USER").requestMatchers("/hr/**")
+						.hasRole("HR").anyRequest().authenticated());
+
+		http.formLogin((form) -> form.loginPage("/welcome").defaultSuccessUrl("/home", true)
+				.failureUrl("/login?error=true").permitAll());
+		http.logout((logout) -> logout
+		        .logoutUrl("/logout")
+		        .deleteCookies("token"));
+
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-		
 
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
@@ -76,4 +74,3 @@ public class SecurityConfig {
 				.passwordEncoder(passwordEncoder).and().build();
 	}
 }
-
