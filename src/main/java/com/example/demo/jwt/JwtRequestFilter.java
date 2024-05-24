@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,51 +22,51 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtUtil jwtUtil;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
 
-		String jwtToken = null;
-		String username = null;
+        String jwtToken = null;
+        String username = null;
 
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("token")) {
-					jwtToken = cookie.getValue();
-				}
-			}
-		}
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    jwtToken = cookie.getValue();
+                }
+            }
+        }
 
-		if (jwtToken != null) {
-			try {
-				username = jwtUtil.extractUsername(jwtToken);
-			} catch (IllegalArgumentException e) {
-				System.out.println("Unable to get JWT Token");
-			} catch (ExpiredJwtException e) {
-				System.out.println("JWT Token has expired");
-			}
-		}
+        if (jwtToken != null) {
+            try {
+                username = jwtUtil.extractUsername(jwtToken);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                System.out.println("JWT Token has expired");
+            }
+        }
 
-		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-			if (jwtUtil.validateToken(jwtToken, userDetails)) {
+            if (jwtUtil.validateToken(jwtToken, userDetails)) {
 
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, userDetails.getAuthorities());
-				usernamePasswordAuthenticationToken
-						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-			}
-		}
-		chain.doFilter(request, response);
-	}
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+        }
+        chain.doFilter(request, response);
+    }
 }
