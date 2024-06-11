@@ -13,42 +13,43 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.models.Employees;
 import com.example.demo.service.EmployeeServiceImpl;
 
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
+@Tag(name = "HR Controller", description = "Controller for managing HR-related operations")
 public class HrController {
 	
-	 private final EmployeeServiceImpl hrservice;
+    private final EmployeeServiceImpl hrservice;
 
-	 public HrController(EmployeeServiceImpl hrservice) {
-	        this.hrservice = hrservice;
-	    }
-	    
-	    
-	  @GetMapping("/hr/home")
-	    public String showEmpList(Model model) {
-	        List<Employees> empList = hrservice.getAllEmployees();
-	        model.addAttribute("Employee", empList);
-	        return "/views/pages/hrhome";
-	    }
-	    
-	  
-	    @GetMapping("/hr/edit/{id}")
-	    public String editEmpForm(@PathVariable Integer id, Model model) {
-	        Optional<Employees> optionalEmp = hrservice.getEmployeeById(id);
-	        if (optionalEmp.isPresent()) {
-	            model.addAttribute("Employee", optionalEmp.get());
-	            return "/views/fragments/hreditemp";
-	        } else {
-	            return "redirect:/hr/home";
-	        }
-	    }
+    public HrController(EmployeeServiceImpl hrservice) {
+        this.hrservice = hrservice;
+    }
+    
+    @Operation(summary = "Show HR home page", description = "Displays the HR home page with a list of employees")
+    @GetMapping("/hr/home")
+    public String showEmpList(Model model) {
+        List<Employees> empList = hrservice.getAllEmployees();
+        model.addAttribute("Employee", empList);
+        return "/views/pages/hrhome";
+    }
+    
+    @Operation(summary = "Show edit employee form", description = "Displays the form for editing an employee")
+    @GetMapping("/hr/edit/{id}")
+    public String editEmpForm(@PathVariable Integer id, Model model) {
+        Optional<Employees> optionalEmp = hrservice.getEmployeeById(id);
+        if (optionalEmp.isPresent()) {
+            model.addAttribute("Employee", optionalEmp.get());
+            return "/views/fragments/hreditemp";
+        } else {
+            return "redirect:/hr/home";
+        }
+    }
 
-	    @PostMapping("/hr/edit/{id}")
-	    public String editEmp(@PathVariable Integer id, @ModelAttribute("Employee") Employees employee) {
-	        hrservice.updateEmployee(id, employee);
-	        return "redirect:/hr/home";
-	    }
-
-
+    @Operation(summary = "Edit an employee", description = "Processes the form submission to edit an employee")
+    @PostMapping("/hr/edit/{id}")
+    public String editEmp(@PathVariable Integer id, @ModelAttribute("Employee") Employees employee) {
+        hrservice.updateEmployee(id, employee);
+        return "redirect:/hr/home";
+    }
 }
